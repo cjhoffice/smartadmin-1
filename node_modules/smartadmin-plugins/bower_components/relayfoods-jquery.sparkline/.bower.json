@@ -1,0 +1,25 @@
+{
+  "name": "relayfoods-jquery.sparkline",
+  "version": "2.1.4",
+  "main": "dist/jquery.sparkline.min.js",
+  "ignore": [
+    "Changelog.txt",
+    "Gruntfile.js",
+    "package.json",
+    ".gitignore",
+    "bower.json",
+    "package.json",
+    "src"
+  ],
+  "homepage": "https://github.com/relayfoods/jquery.sparkline",
+  "_release": "2.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.1.4",
+    "commit": "be87d98a073f5a60fc9706e2a2b293d498e01ded"
+  },
+  "_source": "https://github.com/relayfoods/jquery.sparkline.git",
+  "_target": "^2.1.4",
+  "_originalSource": "relayfoods-jquery.sparkline",
+  "_direct": true
+}

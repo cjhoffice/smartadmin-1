@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Fuel UX Test Suite</title>
+
+		<link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css" media="screen">
+		<link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="../dist/css/fuelux.css" rel="stylesheet" type="text/css">
+
+		<script src="../bower_components/requirejs/require.js"></script>
+
+
+		<script>
+			/* global blanket:true */
+			(function onPageLoad () {
+				/* - - - - - - - - - - - - - - - - - -
+					URL PARAMETER CONFIGURATION
+				- - - - - - - - - - - - - - - - - - */
+
+				// jQuery config
+				var jQueryPath;
+				// Feature detect
+				if ('querySelector' in document
+					&& 'localStorage' in window
+					&& 'addEventListener' in window ) {
+					jQueryPath = 'bower_components/jquery/dist/jquery';	// v2.x
+				} else {
+					jQueryPath = 'bower_components/jquery-1.9.1/jquery';
+				}
+				// or force/overwrite the variable with a version via '?jquery='' URL parameter
+				var jQueryVersionParameter = location.search.match(/[?&]jquery=(.*?)(?=&|$)/);
+				var jQueryVersion = (jQueryVersionParameter) ? jQueryVersionParameter[1] : undefined;
+				// if jquery version does not use dist folder
+				if (jQueryVersion === '1.9.1') {
+					jQueryPath = 'bower_components/jquery-' + jQueryVersion + '/jquery';
+				}
+
+				// moment config
+				var momentPath = 'bower_components/moment/min/moment-with-locales';
+				var momentParameter = location.search.match(/[?&]no-moment=(.*?)(?=&|$)/);
+				window.noMoment = (momentParameter) ? momentParameter[1] : false;
+
+				// base config
+				var requireConfig = {
+					baseUrl: '../',
+					paths: {
+						jquery: jQueryPath,
+						bootstrap: 'bower_components/bootstrap/dist/js/bootstrap',
+						fuelux: 'js',
+						tests: window.noMoment ? 'test/tests-no-moment' : 'test/tests',
+						text: 'bower_components/requirejs-text/text',
+						qunit: 'bower_components/qunit/qunit/qunit'
+					},
+					shim: {
+						'bootstrap': {
+							deps: ['jquery'],
+							exports: 'bootstrap'
+						}
+					}
+				};
+
+				if (window.noMoment === false) {
+					requireConfig.paths.moment = momentPath;
+				}
+
+				// have Blanket coverage test talk to grunt via alert()
+				if (location.href.match(/(\?|&)gruntReport($|&|=)/)) {
+					blanket.options('reporter', '/node_modules/grunt-blanket-qunit/reporter/grunt-reporter.js');
+				}
+
+				// default to not testing dist
+				var testdistParameter = location.search.match(/[?&]testdist=(true|false?)(?=&|$)/);
+				var testdist = (testdistParameter && testdistParameter[1] === 'true') ? true : false;
+				if (testdist) {
+					// map all requests for individual modules to merged library
+					requireConfig.map = {
+						'*': {
+							'fuelux/checkbox': 'dist/js/fuelux.min',
+							'fuelux/combobox': 'dist/js/fuelux.min',
+							'fuelux/datepicker': 'dist/js/fuelux.min',
+							'fuelux/dropdown-autoflip': 'dist/js/fuelux.min',
+							'fuelux/infinite-scroll': 'dist/js/fuelux.min',
+							'fuelux/loader': 'dist/js/fuelux.min',
+							'fuelux/pillbox': 'dist/js/fuelux.min',
+							'fuelux/placard': 'dist/js/fuelux.min',
+							'fuelux/radio': 'dist/js/fuelux.min',
+							'fuelux/repeater-list': 'dist/js/fuelux.min',
+							'fuelux/repeater-thumbnail': 'dist/js/fuelux.min',
+							'fuelux/repeater': 'dist/js/fuelux.min',
+							'fuelux/scheduler': 'dist/js/fuelux.min',
+							'fuelux/search': 'dist/js/fuelux.min',
+							'fuelux/selectlist': 'dist/js/fuelux.min',
+							'fuelux/spinbox': 'dist/js/fuelux.min',
+							'fuelux/picker': 'dist/js/fuelux.min',
+							'fuelux/tree': 'dist/js/fuelux.min',
+							'fuelux/utilities': 'dist/js/fuelux.min',
+							'fuelux/wizard': 'dist/js/fuelux.min'
+						}
+					};
+				}
+
+				require.config(requireConfig);
+
+				require(['tests'], function noop () {});
+			})();
+		</script>
+	</head>
+	<body class="fuelux">
+		<h1 id="qunit-header">Fuel UX Test Suite</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture"></div>
+	</body>
+</html>
